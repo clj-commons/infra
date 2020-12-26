@@ -1,20 +1,18 @@
 #!/usr/bin/env bb
 
 (require '[clojure.java.shell :refer [sh]])
-(require '[clojure.edn :as edn])
 (require '[clojure.string :as str])
 
-(defn make-version! []
-  (let [v (edn/read-string (slurp "version.edn"))
-        commit-count (str/trim-newline (:out (sh "git" "rev-list" "--count" "--first-parent" "HEAD")))]
-    (str v "." commit-count)))
+(def release-marker "Release-")
 
-(if (->> (System/getenv "CIRCLE_SHA1")
-         (sh "git" "show" "-s")
-         :out
-         (re-find #"\[ci deploy\]"))
-  (do
-    (println "executing " (first *command-line-args*))
-    (apply sh (into (vec *command-line-args*) [:env (into {"PROJECT_VERSION" (make-version!)}
-                                                          (System/getenv))])))
-  (println "skipping" (first *command-line-args*)))
+(defn make-version! [tag]
+  (str/replace-first tag release-marker ""))
+
+(when-let [tag (System/getenv "CIRCLE_TAG")]
+  (when (re-find (re-pattern release-marker) tag)
+    (apply println "Executing" *command-line-args*)
+    (->> [:env (into {"PROJECT_VERSION" (make-version! tag)} (System/getenv))]
+         (into (vec *command-line-args*))
+         (apply sh)
+         :exit
+         (System/exit))))
