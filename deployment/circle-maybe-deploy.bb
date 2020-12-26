@@ -1,5 +1,9 @@
 #!/usr/bin/env bb
 
+;; Local Variables:
+;; mode: Clojure
+;; End:
+
 (require '[clojure.java.shell :refer [sh]])
 (require '[clojure.string :as str])
 
