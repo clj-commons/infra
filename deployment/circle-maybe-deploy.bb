@@ -3,6 +3,7 @@
 ;; Local Variables:
 ;; mode: Clojure
 ;; End:
+; -*- mode: Clojure; -*-
 
 (require '[clojure.java.shell :refer [sh]])
 (require '[clojure.string :as str])
