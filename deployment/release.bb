@@ -33,12 +33,17 @@
 (defn release-tag [version]
   (str "Release-" version))
 
-(if (all-good?)
-  (let [version (commit-count-version (version!) (commit-count!))
-        tag (release-tag version)]
-    (println "Working-directory is clean, releasing" version)
-    (push!)
-    (tag! tag)
-    (push-tag! tag)
-    (println "done"))
-  (println "unclean"))
+(defn release! []
+  (if (all-good?)
+    (let [version (commit-count-version (version!) (commit-count!))
+          tag (release-tag version)]
+      (println "Working-directory is clean, releasing" version)
+      (push!)
+      (tag! tag)
+      (push-tag! tag)
+      (println "done"))
+    (println "unclean")))
+
+;; default action when executing file directly
+(when (= *file* (System/getProperty "babashka.file"))
+  (release!))
