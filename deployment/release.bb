@@ -1,5 +1,7 @@
 #!/usr/bin/env bb
 
+(ns deployment.release)
+
 ;; Local Variables:
 ;; mode: Clojure
 ;; End:
